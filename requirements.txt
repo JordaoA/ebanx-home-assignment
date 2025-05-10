@@ -1,0 +1,2 @@
+Flask==2.3
+flask-pydantic-spec==0.4.5
