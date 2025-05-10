@@ -1,2 +1,4 @@
 Flask==2.3
 flask-pydantic-spec==0.4.5
+python-dotenv==1.0.0
+tinydb==4.8.0
