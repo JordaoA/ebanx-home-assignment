@@ -1,7 +1,10 @@
 from app import app
 from flask import request, jsonify
-from app.service import (reset_accounts, get_account_balance, process_deposit, process_withdraw, process_transfer)
-
+from app.service import (
+                         create_event, 
+                         reset_accounts, 
+                         get_account_balance, 
+                         )
 
 @app.route('/reset', methods=['POST'])
 def reset():
@@ -9,7 +12,7 @@ def reset():
     Reset state: clear all account data.
     """
     reset_accounts()
-    return '', 200
+    return 'OK', 200
 
 
 @app.route('/balance', methods=['GET'])
@@ -35,32 +38,15 @@ def handle_event():
     - transfer: move funds from origin to destination
     """
     data = request.get_json()
+
     if not data or 'type' not in data:
-        return '', 400
+        return 'Invalid Data', 400
 
-    t = data['type']
+    event = create_event(data)
+    
+    result = event.perform()
 
-    if t == 'deposit':
-        if 'destination' not in data or 'amount' not in data:
-            return '', 400
-        acc = process_deposit(data)
-        return jsonify({"destination": acc}), 201
-
-    if t == 'withdraw':
-        if 'origin' not in data or 'amount' not in data:
-            return '', 400
-        acc = process_withdraw(data)
-        if not acc:
-            return str(0), 404
-        return jsonify({"origin": acc}), 201
-
-    if t == 'transfer':
-        if 'origin' not in data or 'destination' not in data or 'amount' not in data:
-            return '', 400
-        result = process_transfer(data)
-        if not result:
-            return str(0), 404
-        acc_origin, acc_dest = result
-        return jsonify({"origin": acc_origin, "destination": acc_dest}), 201
-
-    return '', 400
+    if result:
+        return result, 201
+    else:
+        return str(0), 404
