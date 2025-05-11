@@ -5,8 +5,10 @@ class Event:
     def __init__(self,data):
         self.data = data
 
+    
     def perform(self):
         return "performed!"
+
 
 class Deposit(Event):
     def __init__(self, data):
@@ -33,6 +35,7 @@ class Withdraw(Event):
     def __init__(self, data):
         super().__init__(data)
 
+    
     def perform(self):
         origin = self.data['origin']
         amount = self.data['amount']
@@ -46,10 +49,12 @@ class Withdraw(Event):
     
         return {"origin": acc}
 
+
 class Transfer(Event):
     def __init__(self, data):
         super().__init__(data)
 
+    
     def perform(self):
         origin = self.data['origin']
         dest = self.data['destination']
