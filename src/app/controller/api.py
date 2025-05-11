@@ -18,6 +18,8 @@ def get_balance():
     Get balance for a given account_id query parameter.
     """
     account_id = request.args.get('account_id')
+    if not account_id:
+        return 'Missing account_id parameter', 400
     balance = get_account_balance(account_id)
     if balance is not None:
         return str(balance), 200
